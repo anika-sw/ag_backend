@@ -1,10 +1,10 @@
 from flask import Flask
-from app.routes import hello_world_bp
+from application import hello_world_bp
 
 def create_app():
-    app = Flask(__name__)
+    application = Flask(__name__)
 
     # Register Blueprints here
-    app.register_blueprint(hello_world_bp)
+    application.register_blueprint(hello_world_bp)
 
-    return app
+    return application
