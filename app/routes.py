@@ -58,7 +58,7 @@ def get_user_inputs():
 # FUNCTIONAL
 #==============================================================
 def generate_song_name_prompt():
-    prompt = f"generate a short song name inspired by: {USER_INPUTS["genre"][0]}"
+    prompt = f"generate a short song name inspired by: {USER_INPUTS['genre'][0]}"
 
     return prompt
 
