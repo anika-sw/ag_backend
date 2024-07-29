@@ -1,9 +1,11 @@
 from flask import Blueprint, request, jsonify, make_response, abort
 import os
 import requests
-# from openai import OpenAI
+from dotenv import load_dotenv
+from openai import OpenAI
 
-# client = OpenAI()
+load_dotenv()
+client = OpenAI()
 
 # FUNCTIONAL HELLO WORLD 
 #==============================================================
@@ -18,11 +20,12 @@ song_bp = Blueprint("song_bp", __name__)
 
 # GLOBAL VARIABLES (currently hard coded mock for development)
 USER_INPUTS = {
-    "genre": ["pop"],
+    "genre": ["pop", "country", "rock"],
   }
 
 
 # 0) get user inputs from front end
+# FUNCTIONAL
 #==============================================================
 @song_bp.route('/get_user_inputs', methods=['POST'])
 def get_user_inputs():
@@ -47,24 +50,22 @@ def get_user_inputs():
 
 
     # Return the matched value
-    return jsonify({"genre": genre})
-
-# user_inputs = {
-#     "genre": ["pop", "country"], #Required 
-#     "instrument": ["guitar", "piano"], #Optional
-# }
+    return jsonify({"genre": genre}) #pop
 
 
-# 1) converts user inputs into string prompt for ChatGPT to generate NAME PROMPT
+
+# 1) converts user inputs into string to generate NAME PROMPT for ChatGPT
+# FUNCTIONAL
 #==============================================================
 def generate_song_name_prompt():
-    prompt = f"generate a short song name inspired by: {USER_INPUT['selections']}"
+    prompt = f"generate a short song name inspired by: {USER_INPUTS["genre"][0]}"
 
     return prompt
 
-
 # 2) makes API call to ChatGPT returns NAME
+# FUNCTIONAL
 # #==============================================================
+@song_bp.route('/get_song_name', methods=['POST'])
 def generate_song_name_from_api():
     prompt = generate_song_name_prompt()
     
