@@ -1,5 +1,6 @@
 from flask import Flask
-from app.routes import hello_world_bp
+# from app.routes import hello_world_bp
+from app.routes import song_bp
 
 # # print a nice greeting.
 # def say_hello(username = "World"):
@@ -19,7 +20,8 @@ from app.routes import hello_world_bp
 application = Flask(__name__)
 
 # Register Blueprints here
-application.register_blueprint(hello_world_bp)
+# application.register_blueprint(hello_world_bp)
+application.register_blueprint(song_bp)
 
 # # add a rule for the index page.
 # application.add_url_rule('/', 'index', (lambda: header_text +
