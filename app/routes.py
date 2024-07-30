@@ -44,20 +44,28 @@ def get_user_inputs(request):
     # Extract JSON data from the request body
     data = request.get_json()
 
-    # Extract the genre from the JSON data
-    genre = data.get('genre')
-    mood = data.get('mood')
-    tempo = data.get('tempo')
+    try:
+        # Extract JSON data from the request body
+        data = request.get_json()
 
-    # Check to ensure that genre is provided and is a list with a least one item
-    if not genre or not isinstance(genre, list) or len(genre) == 0:
-        return jsonify({"error": "The 'genre' parameter is required and must be a list containing at least element."}), 400
-    if not mood or not isinstance(mood, list) or len(mood) == 0:
-        return jsonify({"error": "The 'mood' parameter is required and must be a list containing at least element."}), 400
-    if not tempo or not isinstance(tempo, list) or len(tempo) == 0:
-        return jsonify({"error": "The 'tempo' parameter is required and must be a list containing at least element."}), 400
-    
-    return ({"genre": genre, "mood":mood, "tempo":tempo})
+        # Extract the genre from the JSON data
+        genre = data.get('genre')
+        mood = data.get('mood')
+        tempo = data.get('tempo')
+
+        # Check to ensure that genre is provided and is a list with a least one item
+        if not genre or not isinstance(genre, list) or len(genre) == 0:
+            return "The 'genre' parameter is required and must be a list containing at least element.", 400
+        if not mood or not isinstance(mood, list) or len(mood) == 0:
+            return "The 'mood' parameter is required and must be a list containing at least element.", 400
+        if not tempo or not isinstance(tempo, list) or len(tempo) == 0:
+            return "The 'tempo' parameter is required and must be a list containing at least element.", 400
+        
+        return {"genre": genre, "mood": mood, "tempo": tempo}
+
+    except (ValueError, TypeError, KeyError) as e:
+        # Handle specific exceptions here
+        return {"error": f"Error processing request: {str(e)}"}, 500
 
 
 
@@ -72,7 +80,7 @@ def generate_song_name_prompt(genre, mood, tempo):
 # 2) makes API call to ChatGPT returns NAME
 # FUNCTIONAL
 # #==============================================================
-@song_bp.route('/get_song_name', methods=['POST'])
+@song_bp.route('/create_song_name', methods=['POST'])
 def generate_song_name_from_api():
     """
     user_input contains:
@@ -96,7 +104,7 @@ def generate_song_name_from_api():
 
 # 3) makes API call to Musicfy AI returns SONG
 #==============================================================
-@song_bp.route('/get_song', methods=['POST'])
+@song_bp.route('/create_song', methods=['POST'])
 def generate_song_from_api():
     """
     user_input contains:
@@ -107,14 +115,20 @@ def generate_song_from_api():
     }
     """
     user_input = get_user_inputs(request)
-    
+
         # Call to musicfy API to generate a song
     url = "https://api.musicfy.lol/v1/generate-music"
 
-    payload = {"prompt": f"Create a song in the genre of {user_input['genre'][0]} with a {user_input['mood'][0]} mood and a {user_input['tempo'][0]} tempo.",}
-    headers = {"Content-Type": "application/json", "Authorization": os.getenv("MUSICFY_API_KEY")}
+    print(user_input)
+    if isinstance(user_input, dict):
+        payload = {"prompt": f"Create a song in the genre of {user_input['genre'][0]} with a {user_input['mood'][0]} mood and a {user_input['tempo'][0]} tempo.",}
+        headers = {"Content-Type": "application/json", "Authorization": os.getenv("MUSICFY_API_KEY")}
 
-    response = requests.request("POST", url, json=payload, headers=headers)
+        response = requests.request("POST", url, json=payload, headers=headers)
 
-    return jsonify(response.text)
+        return jsonify(response.text)
+    
+    else:
+        return user_input
+
 
