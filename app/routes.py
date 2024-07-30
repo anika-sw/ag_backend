@@ -7,35 +7,38 @@ from openai import OpenAI
 load_dotenv()
 client = OpenAI()
 
-# FUNCTIONAL HELLO WORLD 
+# FUNCTIONAL HELLO WORLD/ USE FOR DEBUGGING (EB)
 #==============================================================
 # hello_world_bp = Blueprint("hello_world_bp", __name__)
 
 # @hello_world_bp.get("/")
 # def say_hello_world():
-#     return "Hello, World!"
+# return "Hello, World!"
 
 
 song_bp = Blueprint("song_bp", __name__)
 
 # GLOBAL VARIABLES (currently hard coded mock for development)
 USER_INPUTS = {
-    "genre": ["pop", "country", "rock"],
+    "genre": ["rock", "pop", "edm", "hiphop", "country"],
+    "mood": ["happy", "sad", "angry", "romantic", "euphoric"],
+    "tempo": ["slow", "medium", "fast"],
   }
 
 
 # 0) get user inputs from front end
 # FUNCTIONAL
 #==============================================================
-@song_bp.route('/get_user_inputs', methods=['POST'])
-def get_user_inputs():
+def get_user_inputs(request):
     """
     This route retrieve the user inputs selected from the drop down menus in the front 
     end when creating a song.
 
     request body parameters: 
     {
-        "genre": ["pop", "country"], #Required 
+        "genre": ["pop"], #Required
+        "mood": ["happy"], #Required
+        "tempo": ["medium"] #Required
     }  
     """
     # Extract JSON data from the request body
@@ -43,22 +46,26 @@ def get_user_inputs():
 
     # Extract the genre from the JSON data
     genre = data.get('genre')
+    mood = data.get('mood')
+    tempo = data.get('tempo')
 
-    # Check to ensure that genre is provided and is a list
-    if not genre or not isinstance(genre, list):
-        return jsonify({"error": "The 'genre' parameter is required and must be a list."}), 400
-
-
-    # Return the matched value
-    return jsonify({"genre": genre}) #pop
+    # Check to ensure that genre is provided and is a list with a least one item
+    if not genre or not isinstance(genre, list) or len(genre) == 0:
+        return jsonify({"error": "The 'genre' parameter is required and must be a list containing at least element."}), 400
+    if not mood or not isinstance(mood, list) or len(mood) == 0:
+        return jsonify({"error": "The 'mood' parameter is required and must be a list containing at least element."}), 400
+    if not tempo or not isinstance(tempo, list) or len(tempo) == 0:
+        return jsonify({"error": "The 'tempo' parameter is required and must be a list containing at least element."}), 400
+    
+    return ({"genre": genre, "mood":mood, "tempo":tempo})
 
 
 
 # 1) converts user inputs into string to generate NAME PROMPT for ChatGPT
 # FUNCTIONAL
 #==============================================================
-def generate_song_name_prompt():
-    prompt = f"generate a short song name inspired by: {USER_INPUTS['genre'][0]}"
+def generate_song_name_prompt(genre, mood, tempo):
+    prompt = f"generate a short song name inspired by a song in the genre of {genre} with a {mood} mood and a {tempo} tempo."
 
     return prompt
 
@@ -67,7 +74,16 @@ def generate_song_name_prompt():
 # #==============================================================
 @song_bp.route('/get_song_name', methods=['POST'])
 def generate_song_name_from_api():
-    prompt = generate_song_name_prompt()
+    """
+    user_input contains:
+    {
+        "genre": ["pop"],
+        "mood": ["happy"],
+        "tempo": ["medium"]
+    }
+    """
+    user_input = get_user_inputs(request)
+    prompt = generate_song_name_prompt(user_input["genre"][0], user_input["mood"][0], user_input["tempo"][0])
     
     completion = client.chat.completions.create(
         model = "gpt-3.5-turbo",
@@ -78,9 +94,27 @@ def generate_song_name_from_api():
 
     return(completion.choices[0].message.content)
 
+# 3) makes API call to Musicfy AI returns SONG
 #==============================================================
-# 3) converts user inputs into string prompt for Musicfy AI to generate SONG PROMPT
+@song_bp.route('/get_song', methods=['POST'])
+def generate_song_from_api():
+    """
+    user_input contains:
+    {
+        "genre": ["pop"],
+        "mood": ["happy"],
+        "tempo": ["medium"]
+    }
+    """
+    user_input = get_user_inputs(request)
+    
+        # Call to musicfy API to generate a song
+    url = "https://api.musicfy.lol/v1/generate-music"
 
+    payload = {"prompt": f"Create a song in the genre of {user_input["genre"][0]} with a {user_input["mood"][0]} mood and a {user_input["tempo"][0]} tempo.",}
+    headers = {"Content-Type": "application/json", "Authorization": os.getenv("MUSICFY_API_KEY")}
 
-# 4) makes API call to Musicfy AI returns SONG
-#==============================================================
+    response = requests.request("POST", url, json=payload, headers=headers)
+
+    return jsonify(response.text)
+
