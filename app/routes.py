@@ -27,7 +27,6 @@ USER_INPUTS = {
 
 
 # 0) get user inputs from front end
-# FUNCTIONAL
 #==============================================================
 def get_user_inputs(request):
     """
@@ -70,7 +69,6 @@ def get_user_inputs(request):
 
 
 # 1) converts user inputs into string to generate NAME PROMPT for ChatGPT
-# FUNCTIONAL
 #==============================================================
 def generate_song_name_prompt(genre, mood, tempo):
     prompt = f"generate a short song name inspired by a song in the genre of {genre} with a {mood} mood and a {tempo} tempo."

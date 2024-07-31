@@ -22,14 +22,35 @@ def app_context():
     with app.app_context(): 
         yield app
 
-def test_get_user_inputs_empty_genre(app_context):
+#================================== TEST 1 ============================================
+def test_get_user_inputs_empty_list(app_context):
     # Create a mock request object
     mock_request = MagicMock()
     mock_request.get_json.return_value = {'genre': [], 'mood': ['happy'], 'tempo': ['fast']}
+    
+    response = get_user_inputs(mock_request)
+
+    assert response[0] == "The 'genre' parameter is required and must be a list containing at least element."
+    assert response[1] == 400
+
+#================================== TEST 2 ============================================
+def test_get_user_inputs_missing_parameter(app_context):
+    mock_request = MagicMock()
+    mock_request.get_json.return_value = {'genre': ["edm"], 'tempo': ['slow']}
+    
+    response = get_user_inputs(mock_request)
+
+    assert response[0] == "The 'mood' parameter is required and must be a list containing at least element."
+    assert response[1] == 400
+
+#================================== TEST 3 ============================================
+def test_get_user_inputs_not_in_list(app_context):
+    mock_request = MagicMock()
+    mock_request.get_json.return_value = {'genre': ["country"], 'mood': ["angry"], 'tempo': 'medium'}
     print(mock_request.get_json())
     
     response = get_user_inputs(mock_request)
     print(response)
 
-    assert response[0] == "The 'genre' parameter is required and must be a list containing at least element."
+    assert response[0] == "The 'tempo' parameter is required and must be a list containing at least element."
     assert response[1] == 400
