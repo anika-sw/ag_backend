@@ -117,7 +117,6 @@ def generate_song_from_api():
         # Call to musicfy API to generate a song
     url = "https://api.musicfy.lol/v1/generate-music"
 
-    print(user_input)
     if isinstance(user_input, dict):
         payload = {"prompt": f"Create a song in the genre of {user_input['genre'][0]} with a {user_input['mood'][0]} mood and a {user_input['tempo'][0]} tempo.",}
         headers = {"Content-Type": "application/json", "Authorization": os.getenv("MUSICFY_API_KEY")}
