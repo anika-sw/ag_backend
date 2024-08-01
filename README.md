@@ -64,6 +64,7 @@ Set the following environment variables in a `.env` file:
 ### Endpoint: `/create_song_name`
 
 **Method:**  `POST`
+
 **Description:** Generates a song name based on the provided genre, mood, and tempo.
 
 **Request Body**
@@ -85,6 +86,7 @@ The response will be a JSON object containing a generated song name.
 ### Endpoint: `/create_song`
 
 **Method:**  `POST`
+
 **Description:** Generates a song based on the provided genre, mood, and tempo by calling the Musicfy API.
 
 **Request Body**
