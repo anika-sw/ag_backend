@@ -7,13 +7,13 @@ Find the frontend repository here: [AutomatedGroove Frontend](https://github.com
 
 ## Table of Contents
 
-[Installation](#installation)
-[Configuration](#configuration)
-[Implementation](#implementation)
-[API Documentation](#api-documentation)
-[Testing](#testing)
-[License](#license)
-[Contact](#contact)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Implementation](#implementation)
+- [API Documentation](#api-documentation)
+- [Testing](#testing)
+- [License](#license)
+- [Contact](#contact)
 
 
 ## Installation
@@ -70,9 +70,9 @@ Set the following environment variables in a `.env` file:
 The request body should be a JSON object containing the following fields:
 ```json
 {
-"genre": ["pop"],
-"mood": ["happy"],
-"tempo": ["medium"]
+  "genre": ["pop"],
+  "mood": ["happy"],
+  "tempo": ["medium"]
 }
 ```
 
@@ -91,9 +91,9 @@ The response will be a JSON object containing a generated song name.
 The request body should be a JSON object containing the following fields:
 ```json
 {
-"genre": ["pop"],
-"mood": ["happy"],
-"tempo": ["medium"]
+  "genre": ["pop"],
+  "mood": ["happy"],
+  "tempo": ["medium"]
 }
 ```
 
@@ -101,10 +101,10 @@ The request body should be a JSON object containing the following fields:
 The response will be a JSON object containing the generated song url from the Musicfy API.
 ```json
 [
-	{
-		"file_url": “https:/example-url”,
-		"type": "music"
-	}
+  {
+    "file_url": "https://example-url",
+    "type": "music"
+  }
 ]
 ```
 
@@ -126,5 +126,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [**Sunny Muniz**](#https://www.linkedin.com/in/sunny-muniz-4838b8235/)
 - [**Kit Sutliff**](#https://www.linkedin.com/in/kit-sutliff/)
 - [**Anika Stephen Wilbur**](#https://www.linkedin.com/in/anika-stephen-wilbur/)
-
-test
