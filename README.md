@@ -124,7 +124,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 
 ## Creators
-- [**Shelby Willis**](#https://www.linkedin.com/in/shelby-willis-57004a234/)
-- [**Sunny Muniz**](#https://www.linkedin.com/in/sunny-muniz-4838b8235/)
-- [**Kit Sutliff**](#https://www.linkedin.com/in/kit-sutliff/)
-- [**Anika Stephen Wilbur**](#https://www.linkedin.com/in/anika-stephen-wilbur/)
+- [**Shelby Willis**](https://www.linkedin.com/in/shelby-willis-57004a234/)
+- [**Sunny Muniz**](https://www.linkedin.com/in/sunny-muniz-4838b8235/)
+- [**Kit Sutliff**](https://www.linkedin.com/in/kit-sutliff/)
+- [**Anika Stephen Wilbur**](https://www.linkedin.com/in/anika-stephen-wilbur/)
