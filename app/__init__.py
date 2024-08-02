@@ -5,7 +5,7 @@ from app.routes import song_bp
 
 def create_app():
     app = Flask(__name__)
-    CORS(app, resources={r"/create_song": {"origins": "http://automated-groove-frontend-dev.us-west-2.elasticbeanstalk.com"}})
+    CORS(app, resources={r"/*": {"origins": "http://automated-groove-frontend-dev.us-west-2.elasticbeanstalk.com"}})
 
     # Register Blueprints here
     # app.register_blueprint(hello_world_bp) # uncomment for eb
