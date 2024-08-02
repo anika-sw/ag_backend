@@ -7,13 +7,13 @@ from openai import OpenAI
 load_dotenv()
 client = OpenAI()
 
-# FUNCTIONAL HELLO WORLD/ USE FOR DEBUGGING (EB)
-#==============================================================
+# FUNCTIONAL HELLO WORLD/ USE FOR DEBUGGING # uncomment for eb
+# ==============================================================
 # hello_world_bp = Blueprint("hello_world_bp", __name__)
 
 # @hello_world_bp.get("/")
 # def say_hello_world():
-# return "Hello, World!"
+#     return "Hello, World!"
 
 
 song_bp = Blueprint("song_bp", __name__)
