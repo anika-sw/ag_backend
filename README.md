@@ -64,6 +64,7 @@ Set the following environment variables in a `.env` file:
 ### Endpoint: `/create_song_name`
 
 **Method:**  `POST`
+
 **Description:** Generates a song name based on the provided genre, mood, and tempo.
 
 **Request Body**
@@ -85,6 +86,7 @@ The response will be a JSON object containing a generated song name.
 ### Endpoint: `/create_song`
 
 **Method:**  `POST`
+
 **Description:** Generates a song based on the provided genre, mood, and tempo by calling the Musicfy API.
 
 **Request Body**
@@ -122,7 +124,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 
 ## Creators
-- [**Shelby Willis**](#https://www.linkedin.com/in/shelby-willis-57004a234/)
-- [**Sunny Muniz**](#https://www.linkedin.com/in/sunny-muniz-4838b8235/)
-- [**Kit Sutliff**](#https://www.linkedin.com/in/kit-sutliff/)
-- [**Anika Stephen Wilbur**](#https://www.linkedin.com/in/anika-stephen-wilbur/)
+- [**Shelby Willis**](https://www.linkedin.com/in/shelby-willis-57004a234/)
+- [**Sunny Muniz**](https://www.linkedin.com/in/sunny-muniz-4838b8235/)
+- [**Kit Sutliff**](https://www.linkedin.com/in/kit-sutliff/)
+- [**Anika Stephen Wilbur**](https://www.linkedin.com/in/anika-stephen-wilbur/)
