@@ -41,13 +41,13 @@ def get_user_inputs(request):
     }  
     """
     # Extract JSON data from the request body
-    if request.method == 'OPTIONS': 
-        response = jsonify(status=200)
-        response.headers.add('Access-Control-Allow-Origin', 'http://automated-groove-frontend-dev.us-west-2.elasticbeanstalk.com') 
-        response.headers.add('Access-Control-Allow-Methods', 'GET,POST,OPTIONS') 
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type') 
+    # if request.method == 'OPTIONS': 
+    #     response = jsonify(status=200)
+    #     response.headers.add('Access-Control-Allow-Origin', 'http://automated-groove-frontend-dev.us-west-2.elasticbeanstalk.com') 
+    #     response.headers.add('Access-Control-Allow-Methods', 'GET,POST,OPTIONS') 
+    #     response.headers.add('Access-Control-Allow-Headers', 'Content-Type') 
         
-        return response
+    #     return response
     
     data = request.get_json()
 
