@@ -3,6 +3,8 @@ import os
 import requests
 from dotenv import load_dotenv
 from openai import OpenAI
+from flask_cors import CORS
+
 
 load_dotenv()
 client = OpenAI()
@@ -17,6 +19,7 @@ client = OpenAI()
 
 
 song_bp = Blueprint("song_bp", __name__)
+CORS(song_bp)  # Apply CORS to the blueprint
 
 # GLOBAL VARIABLES (currently hard coded mock for development)
 USER_INPUTS = {
