@@ -1,11 +1,9 @@
-from flask import Blueprint, request, jsonify, make_response, abort, current_app
+from flask import Blueprint, request, jsonify, make_response, abort
 import os
 import requests
 from dotenv import load_dotenv
 from openai import OpenAI
 from flask_cors import CORS
-from flask_executor import Executor # Import Executor to handle async processing
-
 
 load_dotenv()
 client = OpenAI()
