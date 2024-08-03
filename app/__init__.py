@@ -7,8 +7,6 @@ def create_app():
     app = Flask(__name__)
     CORS(app, resources={r"/*": {"origins": "https://automated-groove.vercel.app"}})
 
-
-
     # Register Blueprints here
     # app.register_blueprint(hello_world_bp) # uncomment for eb
     app.register_blueprint(song_bp)
