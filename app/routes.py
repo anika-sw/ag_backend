@@ -1,9 +1,10 @@
-from flask import Blueprint, request, jsonify, make_response, abort
+from flask import Blueprint, request, jsonify, make_response, abort, current_app
 import os
 import requests
 from dotenv import load_dotenv
 from openai import OpenAI
 from flask_cors import CORS
+from flask_executor import Executor # Import Executor to handle async processing
 
 
 load_dotenv()
@@ -119,6 +120,13 @@ def generate_song_from_api():
     if "error" in user_input:
         return jsonify(user_input), user_input.get("status", 400)
 
+    # Submit the long-running task to the background
+    future = current_app.executor.submit(fetch_song, user_input)
+
+    # Return a response to the client indicating that the task is being processed
+    return jsonify({"message": "Processing request. Check back later."}), 202
+
+def fetch_song(user_input):
     url = "https://api.musicfy.lol/v1/generate-music"
     payload = {
         "prompt": f"Create a song in the genre of {user_input['genre'][0]} with a {user_input['mood'][0]} mood and a {user_input['tempo'][0]} tempo.",
@@ -128,11 +136,9 @@ def generate_song_from_api():
         "Authorization": os.getenv("MUSICFY_API_KEY")
     }
 
-    response = requests.request("POST", url, json=payload, headers=headers, timeout=90)  # Timeout after 90 seconds
+    response = requests.request("POST", url, json=payload, headers=headers, timeout=90)
 
-
-    # response = requests.request("POST", url, json=payload, headers=headers)
     if response.status_code != 200:
-        return jsonify({"error": "Failed to generate song"}), response.status_code
+        return {"error": "Failed to generate song"}
 
-    return jsonify(response.json())
+    return response.json()
