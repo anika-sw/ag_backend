@@ -116,29 +116,26 @@ def generate_song_name_from_api():
 #==============================================================
 @song_bp.route('/create_song', methods=['POST'])
 def generate_song_from_api():
+    """
+    user_input contains:
+    {
+        "genre": ["pop"],
+        "mood": ["happy"],
+        "tempo": ["medium"]
+    }
+    """
     user_input = get_user_inputs(request)
-    if "error" in user_input:
-        return jsonify(user_input), user_input.get("status", 400)
 
-    # Submit the long-running task to the background
-    future = current_app.executor.submit(fetch_song, user_input)
-
-    # Return a response to the client indicating that the task is being processed
-    return jsonify({"message": "Processing request. Check back later."}), 202
-
-def fetch_song(user_input):
+        # Call to musicfy API to generate a song
     url = "https://api.musicfy.lol/v1/generate-music"
-    payload = {
-        "prompt": f"Create a song in the genre of {user_input['genre'][0]} with a {user_input['mood'][0]} mood and a {user_input['tempo'][0]} tempo.",
-    }
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": os.getenv("MUSICFY_API_KEY")
-    }
 
-    response = requests.request("POST", url, json=payload, headers=headers, timeout=90)
+    if isinstance(user_input, dict):
+        payload = {"prompt": f"Create a song in the genre of {user_input['genre'][0]} with a {user_input['mood'][0]} mood and a {user_input['tempo'][0]} tempo.",}
+        headers = {"Content-Type": "application/json", "Authorization": os.getenv("MUSICFY_API_KEY")}
 
-    if response.status_code != 200:
-        return {"error": "Failed to generate song"}
+        response = requests.request("POST", url, json=payload, headers=headers)
 
-    return response.json()
+        return jsonify(response.text)
+    
+    else:
+        return user_input
