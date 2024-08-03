@@ -128,7 +128,10 @@ def generate_song_from_api():
         "Authorization": os.getenv("MUSICFY_API_KEY")
     }
 
-    response = requests.request("POST", url, json=payload, headers=headers)
+    response = requests.request("POST", url, json=payload, headers=headers, timeout=90)  # Timeout after 90 seconds
+
+
+    # response = requests.request("POST", url, json=payload, headers=headers)
     if response.status_code != 200:
         return jsonify({"error": "Failed to generate song"}), response.status_code
 
