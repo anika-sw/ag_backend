@@ -3,6 +3,7 @@ import os
 import requests
 from dotenv import load_dotenv
 from openai import OpenAI
+from flask_cors import CORS
 
 load_dotenv()
 client = OpenAI()
@@ -17,6 +18,7 @@ client = OpenAI()
 
 
 song_bp = Blueprint("song_bp", __name__)
+CORS(song_bp)
 
 # GLOBAL VARIABLES (currently hard coded mock for development)
 USER_INPUTS = {
@@ -112,28 +114,23 @@ def generate_song_name_from_api():
 #==============================================================
 @song_bp.route('/create_song', methods=['POST'])
 def generate_song_from_api():
-    """
-    user_input contains:
-    {
-        "genre": ["pop"],
-        "mood": ["happy"],
-        "tempo": ["medium"]
-    }
-    """
     user_input = get_user_inputs(request)
+    if "error" in user_input:
+        return jsonify(user_input), user_input.get("status", 400)
 
-        # Call to musicfy API to generate a song
     url = "https://api.musicfy.lol/v1/generate-music"
+    payload = {
+        "prompt": f"Create a song in the genre of {user_input['genre'][0]} with a {user_input['mood'][0]} mood and a {user_input['tempo'][0]} tempo.",
+    }
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": os.getenv("MUSICFY_API_KEY")
+    }
 
-    if isinstance(user_input, dict):
-        payload = {"prompt": f"Create a song in the genre of {user_input['genre'][0]} with a {user_input['mood'][0]} mood and a {user_input['tempo'][0]} tempo.",}
-        headers = {"Content-Type": "application/json", "Authorization": os.getenv("MUSICFY_API_KEY")}
+    response = requests.request("POST", url, json=payload, headers=headers)
+    if response.status_code != 200:
+        return jsonify({"error": "Failed to generate song"}), response.status_code
 
-        response = requests.request("POST", url, json=payload, headers=headers)
-
-        return jsonify(response.text)
-    
-    else:
-        return user_input
+    return jsonify(response.json())
 
 
