@@ -42,14 +42,6 @@ def get_user_inputs(request):
         "tempo": ["medium"] #Required
     }  
     """
-    # Extract JSON data from the request body
-    # if request.method == 'OPTIONS': 
-    #     response = jsonify(status=200)
-    #     response.headers.add('Access-Control-Allow-Origin', 'http://automated-groove-frontend-dev.us-west-2.elasticbeanstalk.com') 
-    #     response.headers.add('Access-Control-Allow-Methods', 'GET,POST,OPTIONS') 
-    #     response.headers.add('Access-Control-Allow-Headers', 'Content-Type') 
-        
-    #     return response
     
     data = request.get_json()
 
@@ -123,6 +115,7 @@ def generate_song_from_api():
     }
     """
     user_input = get_user_inputs(request)
+    print(user_input)
 
         # Call to musicfy API to generate a song
     url = "https://api.musicfy.lol/v1/generate-music"
