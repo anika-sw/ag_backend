@@ -68,7 +68,7 @@ def test_generate_song_from_api_is_called_once(client):
 
         # Set up the mock response object
         mock_response = MagicMock()
-        mock_response.text = 'mocked song data'
+        mock_response.json.return_value = {'song_data': 'mocked song data'}   # Switch to .json() instead of .text
         mock_request.return_value = mock_response
         
         # Set up test data
@@ -99,9 +99,6 @@ def test_generate_song_from_api_is_called_once(client):
         
         # Assert the response from the Flask endpoint
         assert response.status_code == 200
-        assert response.get_json() == 'mocked song data'
-        # Ensures the api has been called only once
+        assert response.get_json() == {'song_data': 'mocked song data'}
+        # Ensures the API has been called only once
         assert mock_request.call_count == 1
-
-        
-

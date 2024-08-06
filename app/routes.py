@@ -126,7 +126,7 @@ def generate_song_from_api():
 
         response = requests.request("POST", url, json=payload, headers=headers)
 
-        return jsonify(response.text)
+        return response.json()
     
     else:
         return user_input
