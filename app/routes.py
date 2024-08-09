@@ -131,4 +131,27 @@ def generate_song_from_api():
     else:
         return user_input
 
+# 4) makes API call to Google reCAPTCHA server to verify a users reCAPTCHA response
+#==============================================================
+@song_bp.route('/verify-recaptcha', methods=['POST'])
+def verify_recaptcha():
+    data = request.get_json()
+    token = data.get("token")
+
+    if not token:
+        return jsonify({"error": "Missing captcha token"}), 400
+
+    url = "https://www.google.com/recaptcha/api/siteverify"
+    payload = {
+        "secret": os.getenv("RECAPTCHA_SECRET_KEY"),
+        "response": token,
+    }
+
+    response = requests.post(url, data=payload)
+
+    if response.status_code == 200:
+        data = response.json()
+        return jsonify(data)
+    else:
+        return jsonify({"error": "Failed to verify captcha"}), 500
 
