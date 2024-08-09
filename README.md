@@ -7,13 +7,18 @@ Find the frontend repository here: [AutomatedGroove Frontend](https://github.com
 
 ## Table of Contents
 
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Implementation](#implementation)
-- [API Documentation](#api-documentation)
-- [Testing](#testing)
-- [License](#license)
-- [Contact](#contact)
+- [AutomatedGroove Backend](#automatedgroove-backend)
+	- [Table of Contents](#table-of-contents)
+	- [Installation](#installation)
+	- [Configuration](#configuration)
+	- [Implementation](#implementation)
+	- [API Documentation](#api-documentation)
+		- [Endpoint: `/create_song_name`](#endpoint-create_song_name)
+		- [Endpoint: `/create_song`](#endpoint-create_song)
+	- [Testing](#testing)
+	- [License](#license)
+	- [Creators](#creators)
+- [sunny was here](#sunny-was-here)
 
 
 ## Installation
@@ -128,3 +133,5 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [**Sunny Muniz**](https://www.linkedin.com/in/sunny-muniz-4838b8235/)
 - [**Kit Sutliff**](https://www.linkedin.com/in/kit-sutliff/)
 - [**Anika Stephen Wilbur**](https://www.linkedin.com/in/anika-stephen-wilbur/)
+  
+# sunny was here
