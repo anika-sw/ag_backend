@@ -137,6 +137,10 @@ def generate_song_from_api():
 def verify_recaptcha():
     data = request.get_json()
     token = data.get("token")
+    print(type(token))
+    print("token starts")
+    print("token:", token)
+    print("token ends")
 
     if not token:
         return jsonify({"error": "Missing captcha token"}), 400
