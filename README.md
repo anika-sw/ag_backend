@@ -21,6 +21,7 @@ Find the frontend repository here: [AutomatedGroove Frontend](https://github.com
 - [sunny was here](#sunny-was-here)
 - [kit was here](#kit-was-here)
 - [Shelby was here](#shelby-was-here)
+- [trying to fix cors](#trying-to-fix-cors)
 
 
 ## Installation
@@ -139,3 +140,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 # sunny was here
 # kit was here
 # Shelby was here
+# trying to fix cors
