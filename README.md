@@ -153,7 +153,7 @@ ag_backend/
 ├── app/                
 │   ├── __pycache__/   # Auto-populated bytcode files
 │   ├── __init__.py    # Directory marker
-│   └── routes.py      # Images, fonts, etc.                  
+│   └── routes.py      # API routes and helper functions                  
 ├── tests/  
 │   ├── __pycache__/   # Auto-populated bytcode files
 │   ├── __init__.py    # Directory marker
