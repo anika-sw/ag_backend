@@ -2,49 +2,42 @@
 
 Streaming services automatically scan audio for copyrighted content, and mute or block uploads featuring this content. This makes it difficult for content creators to find appropriate background music. Our app, AutomatedGroove, automatically generates royalty-free music for content creators, saving them time and money. 
 
-Find the frontend repository here: [AutomatedGroove Frontend](https://github.com/KitSutliff/automated_groove_frontend)
+Find the frontend repository here: [AutomatedGroove Frontend](https://github.com/anika-sw/ag_frontend)
 
 
 ## Table of Contents
 
-- [AutomatedGroove Backend](#automatedgroove-backend)
-	- [Table of Contents](#table-of-contents)
-	- [Installation](#installation)
-	- [Configuration](#configuration)
-	- [Implementation](#implementation)
-	- [API Documentation](#api-documentation)
-		- [Endpoint: `/create_song_name`](#endpoint-create_song_name)
-		- [Endpoint: `/create_song`](#endpoint-create_song)
-	- [Testing](#testing)
-	- [License](#license)
-	- [Creators](#creators)
-- [sunny was here](#sunny-was-here)
-- [kit was here](#kit-was-here)
-- [Shelby was here](#shelby-was-here)
-- [trying to fix cors](#trying-to-fix-cors)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Implementation](#implementation)
+- [API Documentation](#api-documentation)
+- [Testing](#testing)
+- [Project Structure](#project-structure)
+- [License](#license)
+- [Creators](#creators)
 
 
 ## Installation
 
 1. Clone the repository to your local machine:
 	```sh
-	$ git clone https://github.com/KitSutliff/automated_groove_backend.git
+	git clone https://github.com/anika-sw/ag_backend.git
 	```
 2. Navigate into the repository:
 	```sh
-	$ cd automated_groove_backend
+	cd ag_backend
 	```
 3. Create a virtual environment:
 	```sh
-	$ python -m venv venv
+	python -m venv venv
 	```
 4. Activate the virtual environment:
 	```sh
-	$ source venv/bin/activate     # On Windows use `venv\Scripts\activate`
+	source venv/bin/activate     # On Windows use `venv\Scripts\activate`
 	```
 5. Install dependencies:
 	```sh
-	$ pip install -r requirements.txt
+	pip install -r requirements.txt
 	```
 
 
@@ -69,11 +62,10 @@ Set the following environment variables in a `.env` file:
 
 ## API Documentation 
 
-### Endpoint: `/create_song_name`
+**Endpoint**: `/create_song_name`
+- Method:  `POST`
 
-**Method:**  `POST`
-
-**Description:** Generates a song name based on the provided genre, mood, and tempo.
+- Description: Generates a song name based on the provided genre, mood, and tempo.
 
 **Request Body**
 The request body should be a JSON object containing the following fields:
@@ -91,11 +83,11 @@ The response will be a JSON object containing a generated song name.
 "Song Name”
 ``` 
 
-### Endpoint: `/create_song`
+**Endpoint**: `/create_song`
 
-**Method:**  `POST`
+- Method:  `POST`
 
-**Description:** Generates a song based on the provided genre, mood, and tempo by calling the Musicfy API.
+- Description: Generates a song based on the provided genre, mood, and tempo by calling the Musicfy API.
 
 **Request Body**
 The request body should be a JSON object containing the following fields:
@@ -118,6 +110,29 @@ The response will be a JSON object containing the generated song url from the Mu
 ]
 ```
 
+**Endpoint**: `/verify-recaptcha`
+
+- Method:  `POST`
+
+- Description: Passes a token to Google's reCAPTCHA server to verify a user's reCAPTCHA response.
+
+**Request Body**
+The request body should be a JSON object containing the following fields:
+```json
+{
+
+}
+```
+
+**Response Body**
+The response will be a JSON object containing the generated song url from the Musicfy API.
+```json
+{
+	"file_url": "https://example-url",
+	"type": "music"
+}
+```
+
 
 ## Testing
 
@@ -126,7 +141,31 @@ Run the `pytest` testing framework:
 $ pytest
 ```
 
-  
+## Project Structure
+
+```plaintext
+ag_backend/
+├── __pycache__/       # Auto-populated bytcode files
+├── .pytest_cache/     # Auto-populated pytest cache
+├── app/                
+│   ├── __pycache__/   # Auto-populated bytcode files
+│   ├── __init__.py    # Directory marker
+│   └── routes.py      # Images, fonts, etc.                  
+├── tests/  
+│   ├── __pycache__/   # Auto-populated bytcode files
+│   ├── __init__.py    # Directory marker
+│   ├── _test.py       # Test file
+│   └── conftest.py    # Test configuration
+├── venv/              # Virtual environment files        
+├── .env               # Secret environment variables
+├── .gitignore         # Files and directories to ignore in Git
+├── LICENSE                     
+├── package-lock.json  # Auto-populated during production deployment
+├── README.md          # Project documentation
+└── requirements.txt	 # Project dependencies
+```
+
+
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
