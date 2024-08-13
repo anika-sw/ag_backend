@@ -120,16 +120,19 @@ The response will be a JSON object containing the generated song url from the Mu
 The request body should be a JSON object containing the following fields:
 ```json
 {
-
+	"secret": os.getenv("RECAPTCHA_SECRET_KEY"),
+	"response": token,
 }
 ```
 
 **Response Body**
-The response will be a JSON object containing the generated song url from the Musicfy API.
+The response will be a JSON object containing the generated song url from the reCAPTCHA API.
 ```json
 {
-	"file_url": "https://example-url",
-	"type": "music"
+  "success": true|false,
+  "challenge_ts": timestamp,  // timestamp of the challenge load (ISO format yyyy-MM-dd'T'HH:mm:ssZZ)
+  "hostname": string,         // the hostname of the site where the reCAPTCHA was solved
+  "error-codes": [...]        // optional
 }
 ```
 

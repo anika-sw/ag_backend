@@ -1,32 +1,22 @@
-from flask import Blueprint, request, jsonify, make_response, abort
+from flask import Blueprint, request, jsonify
 import os
 import requests
 from dotenv import load_dotenv
 from openai import OpenAI
 from flask_cors import CORS
+# from flask_limiter import Limiter
+# from flask_limiter.util import get_remote_address
 
 load_dotenv()
 client = OpenAI()
-
-# FUNCTIONAL HELLO WORLD/ USE FOR DEBUGGING # uncomment for eb
-# ==============================================================
-# hello_world_bp = Blueprint("hello_world_bp", __name__)
-
-# @hello_world_bp.get("/")
-# def say_hello_world():
-#     return "Hello, World!"
-
+# limiter = Limiter(
+#     get_remote_address,
+#     default_limits=["1 per day"],
+#     storage_uri="redis://localhost:6379",
+# )
 
 song_bp = Blueprint("song_bp", __name__)
 CORS(song_bp)
-
-# GLOBAL VARIABLES (currently hard coded mock for development)
-USER_INPUTS = {
-    "genre": ["rock", "pop", "edm", "hiphop", "country"],
-    "mood": ["happy", "sad", "angry", "romantic", "euphoric"],
-    "tempo": ["slow", "medium", "fast"],
-  }
-
 
 # 0) get user inputs from front end
 #==============================================================
@@ -81,6 +71,7 @@ def generate_song_name_prompt(genre, mood, tempo):
 # FUNCTIONAL
 # #==============================================================
 @song_bp.route('/create_song_name', methods=['POST'])
+# @limiter.limit("1 per day", override_defaults=True) 
 def generate_song_name_from_api():
     """
     user_input contains:
@@ -104,7 +95,9 @@ def generate_song_name_from_api():
 
 # 3) makes API call to Musicfy AI returns SONG
 #==============================================================
+
 @song_bp.route('/create_song', methods=['POST'])
+# @limiter.limit("1 per day", override_defaults=True) 
 def generate_song_from_api():
     """
     user_input contains:
@@ -134,13 +127,10 @@ def generate_song_from_api():
 # 4) makes API call to Google reCAPTCHA server to verify a users reCAPTCHA response
 #==============================================================
 @song_bp.route('/verify-recaptcha', methods=['POST'])
+# @limiter.limit("1 per day", override_defaults=True) 
 def verify_recaptcha():
     data = request.get_json()
     token = data.get("token")
-    print(type(token))
-    print("token starts")
-    print("token:", token)
-    print("token ends")
 
     if not token:
         return jsonify({"error": "Missing captcha token"}), 400

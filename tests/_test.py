@@ -5,15 +5,6 @@ from app.routes import get_user_inputs, generate_song_name_prompt
 from app import create_app
 import os
 
-
-
-# def test_say_hello_world(client):
-#     response = client.get('/')
-#     assert response.status_code == 200
-#     assert response.data == b"Hello, World!"
-
-
-
 @pytest.fixture
 def app_context():
     app = create_app() # Initialize your Flask app 
