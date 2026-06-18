@@ -115,7 +115,7 @@ def generate_song_from_api():
 
     if isinstance(user_input, dict):
         payload = {"prompt": f"Create a song in the genre of {user_input['genre'][0]} with a {user_input['mood'][0]} mood and a {user_input['tempo'][0]} tempo.",}
-        headers = {"Content-Type": "application/json", "Authorization": os.getenv("MUSICFY_API_KEY")}
+        headers = {"Content-Type": "application/json", "Authorization": f"Bearer {os.getenv('MUSICFY_API_KEY')}"}
 
         response = requests.request("POST", url, json=payload, headers=headers)
 
