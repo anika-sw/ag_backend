@@ -87,7 +87,8 @@ def test_generate_song_from_api_is_called_once(client):
             json=expected_payload,
             headers=expected_headers
         )
-        
+        print(response.status_code)
+        print(response.get_json())
         # Assert the response from the Flask endpoint
         assert response.status_code == 200
         assert response.get_json() == {'song_data': 'mocked song data'}

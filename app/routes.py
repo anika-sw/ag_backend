@@ -18,21 +18,28 @@ client = OpenAI()
 song_bp = Blueprint("song_bp", __name__)
 CORS(song_bp)
 
+# GLOBAL VARIABLES (currently hard coded mock for development)
+USER_INPUTS = {
+    "genre": ["rock", "pop", "edm", "hiphop", "country"],
+    "mood": ["happy", "sad", "angry", "romantic", "euphoric"],
+    "tempo": ["slow", "medium", "fast"],
+}
+
 # 0) get user inputs from front end
 #==============================================================
 def get_user_inputs(request):
     """
-    This route retrieve the user inputs selected from the drop down menus in the front 
+    This route retrieve the user inputs selected from the drop down menus in the front
     end when creating a song.
 
-    request body parameters: 
+    request body parameters:
     {
         "genre": ["pop"], #Required
         "mood": ["happy"], #Required
         "tempo": ["medium"] #Required
-    }  
+    }
     """
-    
+
     data = request.get_json()
 
     try:
@@ -51,13 +58,12 @@ def get_user_inputs(request):
             return "The 'mood' parameter is required and must be a list containing at least element.", 400
         if not tempo or not isinstance(tempo, list) or len(tempo) == 0:
             return "The 'tempo' parameter is required and must be a list containing at least element.", 400
-        
+
         return {"genre": genre, "mood": mood, "tempo": tempo}
 
     except (ValueError, TypeError, KeyError) as e:
         # Handle specific exceptions here
         return {"error": f"Error processing request: {str(e)}"}, 500
-
 
 
 # 1) converts user inputs into string to generate NAME PROMPT for ChatGPT
@@ -71,7 +77,7 @@ def generate_song_name_prompt(genre, mood, tempo):
 # FUNCTIONAL
 # #==============================================================
 @song_bp.route('/create_song_name', methods=['POST'])
-# @limiter.limit("1 per day", override_defaults=True) 
+# @limiter.limit("1 per day", override_defaults=True)
 def generate_song_name_from_api():
     """
     user_input contains:
@@ -83,7 +89,7 @@ def generate_song_name_from_api():
     """
     user_input = get_user_inputs(request)
     prompt = generate_song_name_prompt(user_input["genre"][0], user_input["mood"][0], user_input["tempo"][0])
-    
+
     completion = client.chat.completions.create(
         model = "gpt-3.5-turbo",
         messages = [
@@ -97,37 +103,31 @@ def generate_song_name_from_api():
 #==============================================================
 
 @song_bp.route('/create_song', methods=['POST'])
-# @limiter.limit("1 per day", override_defaults=True) 
+# @limiter.limit("1 per day", override_defaults=True)
 def generate_song_from_api():
-    """
-    user_input contains:
-    {
-        "genre": ["pop"],
-        "mood": ["happy"],
-        "tempo": ["medium"]
-    }
-    """
     user_input = get_user_inputs(request)
-    print(user_input)
+    if "error" in user_input:
+        return jsonify(user_input), user_input.get("status", 400)
 
-        # Call to musicfy API to generate a song
     url = "https://api.musicfy.lol/v1/generate-music"
+    payload = {
+        "prompt": f"Create a song in the genre of {user_input['genre'][0]} with a {user_input['mood'][0]} mood and a {user_input['tempo'][0]} tempo.",
+    }
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {os.getenv('MUSICFY_API_KEY')}"
+    }
 
-    if isinstance(user_input, dict):
-        payload = {"prompt": f"Create a song in the genre of {user_input['genre'][0]} with a {user_input['mood'][0]} mood and a {user_input['tempo'][0]} tempo.",}
-        headers = {"Content-Type": "application/json", "Authorization": f"Bearer {os.getenv('MUSICFY_API_KEY')}"}
+    response = requests.request("POST", url, json=payload, headers=headers)
+    if response.status_code != 200:
+        return jsonify({"error": "Failed to generate song"}), response.status_code
 
-        response = requests.request("POST", url, json=payload, headers=headers)
-
-        return response.json()
-    
-    else:
-        return user_input
+    return jsonify(response.json())
 
 # 4) makes API call to Google reCAPTCHA server to verify a users reCAPTCHA response
 #==============================================================
 @song_bp.route('/verify-recaptcha', methods=['POST'])
-# @limiter.limit("1 per day", override_defaults=True) 
+# @limiter.limit("1 per day", override_defaults=True)
 def verify_recaptcha():
     data = request.get_json()
     token = data.get("token")
@@ -148,4 +148,3 @@ def verify_recaptcha():
         return jsonify(data)
     else:
         return jsonify({"error": "Failed to verify captcha"}), 500
-

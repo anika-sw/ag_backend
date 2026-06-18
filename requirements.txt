@@ -1,5 +1,6 @@
 Flask==3.0.2
 Flask-Cors==4.0.1
+Flask-Executor==1.0.0
 Flask-Migrate==4.0.5
 Flask-SQLAlchemy==3.1.1
 alembic==1.13.1
