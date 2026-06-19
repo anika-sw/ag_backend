@@ -1,8 +1,12 @@
 # AutomatedGroove Backend
 
-Streaming services automatically scan audio for copyrighted content, and mute or block uploads featuring this content. This makes it difficult for content creators to find appropriate background music. Our app, AutomatedGroove, automatically generates royalty-free music for content creators, saving them time and money. 
+Streaming services automatically scan audio for copyrighted content, and mute or block uploads featuring this content. This makes it difficult for content creators to find appropriate background music. Our app, AutomatedGroove, automatically generates royalty-free music for content creators, saving them time and money.
 
 Find the frontend repository here: [AutomatedGroove Frontend](https://github.com/anika-sw/ag_frontend)
+
+## Version Notes
+
+**v2 (current):** Replaced Musicfy AI with [ElevenLabs](https://elevenlabs.io) for music generation. Musicfy's API became degraded and unreliable, returning server-side errors consistently.
 
 
 ## Table of Contents
@@ -41,14 +45,20 @@ Find the frontend repository here: [AutomatedGroove Frontend](https://github.com
 	```
 
 
+## Deployment
+
+This backend is deployed on [Render](https://render.com). Render was chosen over Heroku because the Musicfy API can take longer than 30 seconds to generate a song. Heroku enforces a hard 30-second request timeout (H12 error) that cannot be configured away, which causes song generation requests to fail. Render does not have this limitation.
+
+
 ## Configuration
 
-Set the following environment variables in a `.env` file:
+Set the following environment variables in a `.env` file (or as environment variables in your Render service):
 
 -  `OPENAI_API_KEY`
--  `MUSICFY_API_KEY`
+-  `ELEVENLABS_API_KEY`
+-  `RECAPTCHA_SECRET_KEY`
 
->_Note: You need to obtain your own API keys from both **OpenAI** and **Musicfy AI** to use in this project._
+>_Note: You need to obtain your own API keys from **OpenAI**, **ElevenLabs**, and **Google reCAPTCHA** to use in this project._
 
 
 ## Implementation
@@ -87,7 +97,7 @@ The response will be a JSON object containing a generated song name.
 
 - Method:  `POST`
 
-- Description: Generates a song based on the provided genre, mood, and tempo by calling the Musicfy API.
+- Description: Generates an instrumental song based on the provided genre, mood, and tempo using the ElevenLabs API. The audio is saved server-side and a local file URL is returned.
 
 **Request Body**
 The request body should be a JSON object containing the following fields:
@@ -100,15 +110,22 @@ The request body should be a JSON object containing the following fields:
 ```
 
 **Response Body**
-The response will be a JSON object containing the generated song url from the Musicfy API.
 ```json
 [
   {
-    "file_url": "https://example-url",
-    "type": "music"
+    "file_url": "/songs/<filename>.mp3",
+    "type": "music",
+    "prompt": "the generated prompt sent to ElevenLabs",
+    "provider": "elevenlabs"
   }
 ]
 ```
+
+**Endpoint**: `/songs/<filename>`
+
+- Method: `GET`
+
+- Description: Serves a generated MP3 file by filename.
 
 **Endpoint**: `/verify-recaptcha`
 

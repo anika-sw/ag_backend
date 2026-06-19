@@ -1,5 +1,6 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_from_directory
 import os
+import uuid
 import requests
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -13,6 +14,10 @@ client = OpenAI()
 #     default_limits=["1 per day"],
 #     storage_uri="redis://localhost:6379",
 # )
+
+ELEVENLABS_API_KEY = os.environ.get("ELEVENLABS_API_KEY")
+SONG_DIR = os.path.join(os.getcwd(), "generated_songs")
+os.makedirs(SONG_DIR, exist_ok=True)
 
 song_bp = Blueprint("song_bp", __name__)
 
@@ -97,8 +102,17 @@ def generate_song_name_from_api():
 
     return(completion.choices[0].message.content)
 
-# 3) makes API call to Musicfy AI returns SONG
+# 3) makes API call to ElevenLabs and returns SONG
 #==============================================================
+def build_music_prompt(genre, mood, tempo):
+    return (
+        f"Create a {mood}, {genre} instrumental background track "
+        f"with a {tempo} tempo. "
+        "Make it suitable for content creators, social media videos, "
+        "podcasts, or background use. "
+        "No vocals, no lyrics, no copyrighted artist references. "
+        "Use a clean intro, steady groove, and natural ending."
+    )
 
 @song_bp.route('/create_song', methods=['POST'])
 # @limiter.limit("1 per day", override_defaults=True)
@@ -107,21 +121,52 @@ def generate_song_from_api():
     if "error" in user_input:
         return jsonify(user_input), user_input.get("status", 400)
 
-    url = "https://api.musicfy.lol/v1/generate-music"
-    payload = {
-        "prompt": f"Create a song in the genre of {user_input['genre'][0]} with a {user_input['mood'][0]} mood and a {user_input['tempo'][0]} tempo.",
-    }
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {os.getenv('MUSICFY_API_KEY')}"
-    }
+    genre = user_input["genre"][0]
+    mood = user_input["mood"][0]
+    tempo = user_input["tempo"][0]
 
-    response = requests.request("POST", url, json=payload, headers=headers)
-    if response.status_code != 200:
-        print(f"Musicfy error {response.status_code}: {response.text}")
-        return jsonify({"error": "Failed to generate song"}), response.status_code
+    prompt = build_music_prompt(genre, mood, tempo)
 
-    return jsonify(response.json())
+    response = requests.post(
+        "https://api.elevenlabs.io/v1/music",
+        headers={
+            "xi-api-key": ELEVENLABS_API_KEY,
+            "Content-Type": "application/json",
+        },
+        json={
+            "prompt": prompt,
+            "music_length_ms": 30000,
+            "model_id": "music_v2",
+            "force_instrumental": True,
+        },
+        timeout=180,
+    )
+
+    if not response.ok:
+        return jsonify({
+            "error": "ElevenLabs music generation failed",
+            "status": response.status_code,
+            "detail": response.text,
+        }), response.status_code
+
+    filename = f"{uuid.uuid4()}.mp3"
+    filepath = os.path.join(SONG_DIR, filename)
+
+    with open(filepath, "wb") as f:
+        f.write(response.content)
+
+    return jsonify([
+        {
+            "file_url": f"/songs/{filename}",
+            "type": "music",
+            "prompt": prompt,
+            "provider": "elevenlabs",
+        }
+    ])
+
+@song_bp.route('/songs/<filename>')
+def get_song(filename):
+    return send_from_directory(SONG_DIR, filename)
 
 # 4) makes API call to Google reCAPTCHA server to verify a users reCAPTCHA response
 #==============================================================
