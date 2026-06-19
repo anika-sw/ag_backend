@@ -118,6 +118,7 @@ def generate_song_from_api():
 
     response = requests.request("POST", url, json=payload, headers=headers)
     if response.status_code != 200:
+        print(f"Musicfy error {response.status_code}: {response.text}")
         return jsonify({"error": "Failed to generate song"}), response.status_code
 
     return jsonify(response.json())
