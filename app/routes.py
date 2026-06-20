@@ -166,7 +166,9 @@ def generate_song_from_api():
 
 @song_bp.route('/songs/<filename>')
 def get_song(filename):
-    return send_from_directory(SONG_DIR, filename)
+    response = send_from_directory(SONG_DIR, filename)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
 
 # 4) makes API call to Google reCAPTCHA server to verify a users reCAPTCHA response
 #==============================================================
