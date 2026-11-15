@@ -94,7 +94,7 @@ def generate_song_name_from_api():
     prompt = generate_song_name_prompt(user_input["genre"][0], user_input["mood"][0], user_input["tempo"][0])
 
     completion = client.chat.completions.create(
-        model = "gpt-3.5-turbo",
+        model = "gpt-4o-mini",
         messages = [
             {"role": "user", "content": prompt}
         ]
